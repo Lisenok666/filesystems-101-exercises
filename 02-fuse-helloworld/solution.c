@@ -126,9 +126,9 @@ static int HelloWorldWrite(const char* path, const char* buf, size_t size, off_t
     (void) size;
     (void) offset;
     (void) ffi;
-    if (strcmp(path+1, NAME) != 0)
-        return -ENOENT;
-    return -EROFS;
+    if (strcmp(path+1, NAME) == 0)
+        return -EROFS;
+    return -ENOENT;
 }
 
 static const struct fuse_operations hellofs_ops = {
