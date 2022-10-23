@@ -15,6 +15,8 @@ const char *LINK = "hello";
 
 static void *HelloWorldInit(struct fuse_conn_info *conn, struct fuse_config *cfg) {
     (void) conn;
+    cfg->uid = getuid();
+    cfg->gid = getgid();
     cfg->kernel_cache = 1;
     return NULL;
 }
