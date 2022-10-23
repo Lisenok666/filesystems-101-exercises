@@ -86,31 +86,24 @@ static int HelloWorldOpen(const char *path, struct fuse_file_info *ffi) {
     return 0;
 }
 
-static int HelloWorldGetAttr(const char *path, struct stat *stbuf, struct fuse_file_info *ffi) {
-    (void) ffi;
-    int res_return = 0;
-
-    memset(stbuf, 0, sizeof(struct stat));
-
-    if (strcmp(path, "/") == 0) {
-        struct fuse_context *context = fuse_get_context();
-        buf->st_mode = S_IFDIR | 0775;
-        buf->st_nlink = 2;
-        buf->st_uid = context->uid;
-        buf->st_gid = context->gid;
-        return 0;
-    }
-    else if (strcmp(path+1, LINK) == 0) {
-        struct fuse_context *context = fuse_get_context();
-        buf->st_mode = S_IFREG | 0400;
-        buf->st_nlink = 1;
-        buf->st_size = 64;
-        buf->st_uid = context->uid;
-        buf->st_gid = context->gid;
-        return 0;
-    }
-    else
-        return -ENOENT;
+static int HelloWorldGetAttr(const char *path, struct stat *stbuf,
+                         struct fuse_file_info *fi)
+{
+        (void) fi;
+        int res = 0;
+ 
+        memset(stbuf, 0, sizeof(struct stat));
+        if (strcmp(path, "/") == 0) {
+                stbuf->st_mode = S_IFDIR | 0755;
+                stbuf->st_nlink = 2;
+        } else if (strcmp(path+1, options.filename) == 0) {
+                stbuf->st_mode = S_IFREG | 0444;
+                stbuf->st_nlink = 1;
+                stbuf->st_size = strlen(options.contents);
+        } else
+                res = -ENOENT;
+ 
+        return res;
 }
 
 static int HelloWorldCreate(const char* path, mode_t mode, struct fuse_file_info *ffi) {
