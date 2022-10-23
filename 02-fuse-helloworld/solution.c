@@ -2,12 +2,14 @@
 
 #include <fuse.h>
 //my include
-#include <stdio.h>
-#include <string.h>
 #include <errno.h>
+#include <string.h>
 #include <fcntl.h>
 #include <stddef.h>
 #include <assert.h>
+#include <stdlib.h>
+#include <stddef.h>
+#include <stdio.h>
 
 const char *LINK = "hello";
 
