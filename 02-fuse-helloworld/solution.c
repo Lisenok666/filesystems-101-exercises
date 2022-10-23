@@ -60,7 +60,7 @@ static int HelloWorldReadDir(const char *path, void *buf, fuse_fill_dir_t filler
 
     filler(buf, ".", NULL, 0, 0);
     filler(buf, "..", NULL, 0, 0);
-    filler(buf, filename, NULL, 0, 0);
+    filler(buf, LINK, NULL, 0, 0);
 
     return 0;
 }
