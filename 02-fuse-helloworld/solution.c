@@ -15,9 +15,19 @@ const char *LINK = "hello";
 
 static void *HelloWorldInit(struct fuse_conn_info *conn, struct fuse_config *cfg) {
     (void) conn;
-    cfg->uid = getuid();
-    cfg->gid = getgid();
+    (void) cfg;
+
     cfg->kernel_cache = 1;
+    cfg->uid = getgid();
+    cfg->set_gid = 1;
+    cfg->gid = getgid();
+    cfg->set_mode = 1;
+    cfg->umask = ~S_IRUSR;
+
+    content = (char*) malloc(64 * sizeof(char));
+    if (!content)
+        exit(-ENOMEM);
+
     return NULL;
 }
 
@@ -35,9 +45,9 @@ static int HelloWorldRead(onst char *path, void *buf, size_t size, off_t offset,
     if(strcmp(path+1, LINK) != 0)
         return -ENOENT;
 
-    struct fuse_context *context  = fuse_get_context();
+    struct fuse_context *context = fuse_get_context();
     char *out = (char *)malloc(sizeof(char)*64);
-    sprintf(out, "hello, %d\n", context ->pid);
+    sprintf(out, "hello, %d\n", context->pid);
     int len = (int)strlen(out);
     if (offset < len)
     {
