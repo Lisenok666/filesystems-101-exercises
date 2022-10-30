@@ -9,8 +9,9 @@
 #define BS	(256*1024)
 
 struct io_data {
-    size_t offset;
-    int index;
+    int read;
+    off_t first_offset, offset;
+    size_t first_len;
     struct iovec iov;
 };
 
