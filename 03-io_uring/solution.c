@@ -49,7 +49,9 @@ static int write_query(int in, int out, struct io_uring *ring, struct io_data *d
         io_uring_prep_writev(sqe, out, &data->iov, 1, data->offset);
 
     io_uring_sqe_set_data(sqe, data);
-    io_uring_submit(ring);
+    if (io_uring_submit(ring) < 0)
+        return -errno;
+    return 0;
 }
 
 static int read_query(int in, struct io_uring *ring, off_t size, off_t offset)
