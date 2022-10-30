@@ -29,7 +29,7 @@ static int get_file_size(int fd, off_t *size)
     return -1;
 }
 
-static int write_query(int in, int out, struct io_uring *ring, struct io_data *data)
+static int write_query(int out, struct io_uring *ring, struct io_data *data)
 {
     data->read = 0;
     data->offset = data->first_offset;
@@ -101,7 +101,7 @@ static int copy_file(int in, int out, struct io_uring *ring, off_t in_size)
                 size = BS;
             if (size == 0)
                 break;
-            if (read_query(in, ring, in_size, offset))
+            if (read_query(in, ring, size, offset))
                 break;
             write_left_block += size;
             in_size -= size;
@@ -125,7 +125,7 @@ static int copy_file(int in, int out, struct io_uring *ring, off_t in_size)
 
             if (data->read)
             {
-                ret = write_query(in, out, ring, in_size , offset);
+                ret = write_query(out, ring, date);
                 if (ret != 0)
                     return ret;
                 write_left -= data->first_len;
