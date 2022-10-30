@@ -168,7 +168,7 @@ int copy(int in, int out)
     if (io_uring_queue_init(ENTRIES, &ring, 0) < 0)
         return -errno;
 
-    if (get_file_size(infd, &insize))
+    if (get_file_size(in, &insize))
         return -errno;
 
     answer = copy_file(in, out, &ring, insize);
