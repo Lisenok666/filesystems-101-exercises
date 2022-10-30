@@ -171,7 +171,7 @@ int copy(int in, int out)
     if (get_file_size(infd, &insize))
         return -errno;
 
-    answer = copy_file(in, out, &ring, in_size);
+    answer = copy_file(in, out, &ring, insize);
     io_uring_queue_exit(&ring);
 	return answer;
 }
