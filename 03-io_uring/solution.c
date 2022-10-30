@@ -29,7 +29,7 @@ static int get_file_size(int fd, off_t *size)
     return -1;
 }
 
-static int write_query(int out, struct io_uring *ring, struct io_data *data)
+static int write_query(int in, int out, struct io_uring *ring, struct io_data *data)
 {
     data->read = 0;
     data->offset = data->first_offset;
@@ -52,7 +52,7 @@ static int write_query(int out, struct io_uring *ring, struct io_data *data)
     io_uring_submit(ring);
 }
 
-static int read_query(int in, struct io_uring *ring, off_t size, off_t offset)
+static int read_query(int in, int out, struct io_uring *ring, off_t size, off_t offset)
 {
     struct io_uring_sqe *sqe;
     struct io_data *data;
@@ -101,7 +101,7 @@ static int copy_file(int in, int out, struct io_uring *ring, off_t in_size)
                 size = BS;
             if (size == 0)
                 break;
-            if (read_query(in, ring, size, offset))
+            if (read_query(in, ring, this_size, offset))
                 break;
             write_left_block += size;
             in_size -= size;
@@ -125,7 +125,7 @@ static int copy_file(int in, int out, struct io_uring *ring, off_t in_size)
 
             if (data->read)
             {
-                ret = write_query(out, ring, data);
+                ret = write_query(in, ring, this_size, offset);
                 if (ret != 0)
                     return ret;
                 write_left -= data->first_len;
@@ -136,7 +136,7 @@ static int copy_file(int in, int out, struct io_uring *ring, off_t in_size)
             else
             {
                 free(data);
-                write_entries--;
+                writes--;
             }
             io_uring_cqe_seen(ring, cqe);
         }
