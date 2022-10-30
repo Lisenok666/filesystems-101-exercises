@@ -1,5 +1,6 @@
 #include <solution.h>
 #include <errno.h>
+#include <assert.h>
 #include <sys/stat.h>
 #include <liburing.h>
 #include <stdlib.h>
