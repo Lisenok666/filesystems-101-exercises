@@ -155,7 +155,7 @@ bool node_contain(struct BNode *r, int k)
         i++;
     if(i < r->count &&  k == (r->values)[i])
         return true;
-    if(r->leaf)
+    if(r->leaf || (r->links)[i] == NULL)
         return false;
     else
         return node_contain((r->links)[i], k);
@@ -165,11 +165,13 @@ bool btree_contains(struct btree *t, int k)
 {
     struct BNode *r = t->root;
 	int i = 0;
+	if(!t->root)
+        return false;
 	while(i <= r->count && k > (r->values)[i])
 	    i++;
 	if(i < r->count &&  k == (r->values)[i])
 	    return true;
-	if(r->leaf)
+	if(r->leaf || (r->links)[i] == NULL)
 	    return false;
 	else
         return node_contain((r->links)[i], k);
