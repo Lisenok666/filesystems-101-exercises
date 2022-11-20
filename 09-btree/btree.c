@@ -17,11 +17,22 @@ struct btree
 static struct BNode* node_alloc(unsigned int t, int leaf)
 {
     struct BNode *temp = (struct BNode *)malloc(sizeof(struct BNode));
+    if (!temp)
+        return NULL;
     temp->t = t;
     temp->links = (struct BNode **)malloc((2 *t +1) * sizeof(struct BNode *));
+    if (!temp->links){
+        free(temp);
+        return NULL;
+    }
     temp->count = 0;
     temp->leaf = leaf;
     temp->values = (int *)malloc((2*t ) * sizeof(int));
+    if (!temp->values){
+        free(temp->links);
+        free(temp);
+        return NULL;
+    }
     printf("Succsess struct node_alloc \n");
     return temp;
 }
@@ -29,7 +40,14 @@ static struct BNode* node_alloc(unsigned int t, int leaf)
 struct btree* btree_alloc(unsigned int L)
 {
     struct btree *newTree = (struct btree *)malloc(sizeof(struct btree));
+    if (!newTree)
+        return NULL;
     newTree->root = node_alloc(L, 1);
+    if (!newTree->root)
+    {
+        free(newTree);
+        return NULL;
+    }
     newTree->t = L;
     printf("Succsess struct btree* btree_alloc \n");
 	return newTree;
