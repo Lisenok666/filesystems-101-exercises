@@ -14,14 +14,14 @@ struct btree
     int  t;
 };
 
-struct BNode* node_alloc(unsigned int t, int leaf)
+static struct BNode* node_alloc(unsigned int t, int leaf)
 {
     struct BNode *temp = (struct BNode *)malloc(sizeof(struct BNode));
     temp->t = t;
-    temp->links = (struct BNode **)malloc(2 *t * sizeof(struct BNode *));
+    temp->links = (struct BNode **)malloc((2 *t +1) * sizeof(struct BNode *));
     temp->count = 0;
     temp->leaf = leaf;
-    temp->values = (int *)malloc((2*t - 1) * sizeof(int));
+    temp->values = (int *)malloc((2*t ) * sizeof(int));
     printf("Succsess struct node_alloc \n");
     return temp;
 }
@@ -73,9 +73,9 @@ void btree_split_child(struct BNode *x, int i, struct BNode *y)
     for(int j = x->count + 1; j >= i + 1; j--)
         (x->links)[j + 1]  =  (y->links)[j + t];
     (x->links)[i + 1] = z;
-    for(int j = x->count + 1; j >= i; j--)
+    for(int j = x->count - 1; j >= i; j--)
         (x->values)[j + 1]  =  (x->values)[j];
-    (x->values)[i]  =  (y->values)[t];
+    (x->values)[i]  =  (y->values)[t - 1];
     x->count++;
     return;
 
